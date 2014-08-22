@@ -1,0 +1,75 @@
+﻿<meta http-equiv="Access-Control-Allow-Origin" content="*" />
+<script src="Scripts/jquery-2.1.0.js"></script>
+<link href="Content/Site.less" type="text/css" rel="stylesheet"/>
+<link href="Content/bootstrap/bootstrap.less" type="text/css" rel="stylesheet" />
+<script src="Scripts/bootstrap.js"></script>
+<script src="Scripts/jquery.mobile-1.4.3.js"></script>
+<script language="javascript">
+    var url = "http://imperserver.azurewebsites.net/api/values";
+    $(document).ready(function () {
+        $.mobile.allowCrossDomainPages = true;
+        var feedbackArea = $('#response');
+
+        $.ajax({
+            type: 'GET',
+            url: 'http://imperserver.azurewebsites.net/api/values'
+        }).done(function (data) {
+            feedbackArea.html(data);
+        }).error(function (jqXHR, textStatus, errorThrown) {
+            feedbackArea.html(jqXHR.responseText || textStatus);
+        });
+
+        //jsonp get method
+        $.getJSON(url, function (jsonp) {
+            $("#jsonp-response").html(JSON.stringify(jsonp, null, 2));
+        });
+
+        //load data phonegap way
+        loadXML();
+    });
+    
+    function loadXML() {
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://imperserver.azurewebsites.net/api/values", true);
+        request.onreadystatechange = function () {//Call a function when the state changes.
+            if (request.readyState == 4) {
+                if (request.status == 200 || request.status == 0) {
+                    var tweets = JSON.parse(request.responseText);
+                    var twitter = document.getElementById("xmldrequest");
+                    twitter.innerHTML = tweets;
+                }
+            }
+        }
+        console.log("asking for tweets");
+        request.send();
+    }
+    //$('#testButton')
+    //    .click(function () {
+
+    //        console.log("test");
+    //    });
+</script>
+
+<div class="jumbotron">
+    <h2>Auto start ajax Test CORS (Cross-origin resource sharing)</h2>
+    <p>
+    <p id="response">
+    </p>
+</div>
+<br />
+<br />
+<div class="jumbotron">
+    <h2>Auto start ajax jsonp response</h2>
+    <p id="jsonp-response">
+    </p>
+</div>
+<div class="jumbotron">
+    <h2>Loading Data via XML using HTTPRequest</h2>
+    <p id="xmldrequest"></p>
+</div>
+
+<script src="Scripts/jquery.validate.js"></script>
+<script src="Scripts/modernizr-2.7.1.js"></script>
+<script src="Scripts/respond.js"></script>
+
+
